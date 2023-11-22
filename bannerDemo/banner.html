@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>咪咕轮播图</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #swiper {
+        position: relative;
+      }
+      .swiper {
+        width: 1400px;
+        height: 380px;
+        margin: 0 auto;
+        position: relative;
+      }
+      .swiperItem {
+        width: 1400px;
+        height: 350px;
+        position: absolute;
+        transition: 1s;
+        box-shadow: 0 0 15px black;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+ 
+      .swiperItem img {
+        width: 1400px;
+        height: 350px;
+        display: block;
+      }
+      .def {
+        opacity: 0;
+        z-index: -1;
+        transform: perspective(500px) translateZ(-250px);
+      }
+      .c {
+        opacity: 1;
+        z-index: 1;
+        transform: perspective(500px) translateZ(-230px) translateX(230px);
+      }
+      .a {
+        opacity: 1;
+        z-index: 1;
+        transform: perspective(500px) translateZ(-230px) translateX(-230px);
+      }
+      .b {
+        opacity: 1;
+        z-index: 999;
+        transform: perspective(500px) translateZ(-100px) translateX(0px);
+      }
+      /* 按钮 */
+      .btn {
+        position: absolute;
+        width: 51px;
+        height: 100px;
+        top: 30%;
+        opacity: 0;
+        transition: 0.5s;
+      }
+      .btn_left {
+        border-radius: 0 50px 50px 0; 
+        left: 0;
+        background-image: url(https://img.tucang.cc/api/image/show/be120a1ff4ce91618e692f403bf39927);
+      }
+      .btn_right {
+        border-radius: 50px 0 0 50px;
+        right: 0;
+        background-image: url(https://img.tucang.cc/api/image/show/cbe3c16a298613e126c47c278e157c0b);
+      }
+      #swiper:hover .btn{
+        opacity: 1;
+      }
+      .btn:hover {
+        /*background-color: #e91e63;*/
+      }
+      .pointers {
+        height: 4px;
+        width: 200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-around;
+      }
+      .pointers a {
+        width: 15px;
+        height: 4px;
+        background-color: #d5d5d5;
+        border-radius: 2px;
+      }
+      .pointers .show {
+        background-color: #e91e63;
+      }
+      .pointers .hidden {
+        background-color: #d5d5d5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swiper">
+      <div class="swiper">
+        <div class="swiperItem b">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/ceb1bbe0b2b96bcbcd0a9b187161275c" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem c">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/d5453237aa3f73550d7039e613fcb73d" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem def">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/fa050f3ec90cb08b37de8e60983ab131" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem def">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/497aefee3ca15dc605b32ebb0ad4c94e" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem def">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/d8b82c28c455b21b8522f36a3b28cbc1" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem def">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/f67d9b6f276bb4943825aae26d928682" alt="" />
+          </a>
+        </div>
+        <div class="swiperItem a">
+          <a href="#">
+            <img src="https://img.tucang.cc/api/image/show/4f03d5da8b4435e510bbcdd89b1cc63c" alt="" />
+          </a>
+        </div>
+      </div>
+      <a href="#" class="btn btn_left"></a>
+      <a href="#" class="btn btn_right"></a>
+      <div class="pointers">
+        <a href="#" class="show"></a>
+        <a href="#" class="hidden"></a>
+        <a href="#" class="hidden"></a>
+        <a href="#" class="hidden"></a>
+        <a href="#" class="hidden"></a>
+        <a href="#" class="hidden"></a>
+        <a href="#" class="hidden"></a>
+      </div>
+    </div>
+    <script>
+      var swiper = document.getElementById("swiper"); //外层父容器
+      var swiperItem = document.getElementsByClassName("swiperItem"); //每一个图片容器
+      var points = document.querySelectorAll(".pointers a"); //获取小点
+      var btn_left = document.querySelector(".btn_left"); //获取左按钮
+      var btn_right = document.querySelector(".btn_right"); //获取右按钮
+      var nowIndex = 0; //初始默认下标
+      var timer; //计时器对象
+
+      swiperPlay();
+      //1定义轮播方法
+      function swiperPlay() {
+        timer = setInterval(function () {
+          nowIndex++;
+          if (nowIndex === swiperItem.length) {
+            nowIndex = 0;
+          }
+          changeAll();
+        }, 2000);
+      }
+      //2修改图片和小圆点显示效果的方法
+      function changeAll() {
+        //调用修改图片方法和修改小圆点显示效果的方法
+        changeImg();
+        changePoint();
+      }
+      function changeImg() {
+        //遍历所有的图片，让他们的显示全部为def的样式
+        for (var i = 0; i < swiperItem.length; i++) {
+          swiperItem[i].className = "swiperItem def";
+        }
+        if (nowIndex === 0) {
+          swiperItem[nowIndex].className = "swiperItem b";
+          swiperItem[swiperItem.length - 1].className = "swiperItem a";
+          swiperItem[nowIndex + 1].className = "swiperItem c";
+        } else if (nowIndex === swiperItem.length - 1) {
+          swiperItem[nowIndex].className = "swiperItem b";
+          swiperItem[nowIndex - 1].className = "swiperItem a";
+          swiperItem[0].className = "swiperItem c";
+        } else {
+          //然后根据当前的下标来进行显示
+          swiperItem[nowIndex].className = "swiperItem b";
+          swiperItem[nowIndex - 1].className = "swiperItem a";
+          swiperItem[nowIndex + 1].className = "swiperItem c";
+        }
+      }
+      //鼠标悬浮到轮播图上暂时轮播，离开则继续轮播
+      swiper.onmouseover = function () {
+        clearInterval(timer);
+      };
+      swiper.onmouseout = function () {
+        swiperPlay();
+      };
+      //小圆点跟踪切换
+      function changePoint() {
+        for (var i = 0; i < points.length; i++) {
+          points[i].className = "hidden";
+        }
+        points[nowIndex].className = "show";
+      }
+      //点击小圆点触发切换轮播图当前页
+      for (var i = 0; i < points.length; i++) {
+        //先给小圆点添加下标
+        points[i].index = i;
+        points[i].onclick = function () {
+          // console.log(this.index);
+          //通过下标进行一个当前nowIndex的更新
+          nowIndex = this.index;
+          changeAll();
+        };
+      }
+      //点击图片切换
+      for (var i = 0; i < swiperItem.length; i++) {
+        swiperItem[i].index = i;
+        swiperItem[i].onclick = function () {
+          nowIndex = this.index;
+          changeAll();
+        };
+      }
+      // //点击左按键
+      // btn_left.onclick = function () {
+      //   nowIndex--;
+      //   if (nowIndex < 0) {
+      //     //如果现在是第一页，还往左翻，那就直接回到最后一张
+      //     nowIndex = swiperItem.length - 1;
+      //   }
+      //   changeAll();
+      // };
+      // //点击右按键
+      // btn_right.onclick = function () {
+      //   nowIndex++;
+      //   if (nowIndex === swiperItem.length) {
+      //     nowIndex = 0;
+      //   }
+      //   changeAll();
+      // };
+      var lastClickTime = new Date(0).getTime(); // 初始值设为 1970 年 1 月 1 日 00:00:00 的时间戳
+
+      // 点击左按键
+      btn_left.onclick = function () {
+        var nowClickTime = Date.now(); // 获取当前点击时间
+        if (nowClickTime - lastClickTime < 500) {
+          return; // 如果距离上一次点击时间小于500毫秒，不执行切换操作
+        }
+        lastClickTime = nowClickTime; // 更新上一次点击时间为当前时间
+
+        nowIndex--;
+        if (nowIndex < 0) {
+          //如果现在是第一页，还往左翻，那就直接回到最后一张
+          nowIndex = swiperItem.length - 1;
+        }
+        changeAll();
+      };
+
+      // 点击右按键
+      btn_right.onclick = function () {
+        var nowClickTime = Date.now();
+        if (nowClickTime - lastClickTime < 500) {
+          return;
+        }
+        lastClickTime = nowClickTime;
+
+        nowIndex++;
+        if (nowIndex === swiperItem.length) {
+          nowIndex = 0;
+        }
+        changeAll();
+      };
+
+      // 失去焦点时清除定时器
+      window.onblur = function () {
+        clearInterval(timer);
+      };
+      // 获得焦点时重新启动轮播
+      window.onfocus = function () {
+        swiperPlay();
+      };
+    </script>
+  </body>
+</html>
